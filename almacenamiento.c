@@ -1,8 +1,8 @@
 #include "almacenamiento.h"
 
-
-segmento newSegmento() {
-  segmento nuevo = (segmento *) malloc(sizeof(segmento));
+/*INICIO Funciones y Procedimientos referentes al tipo hashLote*/
+Segmento newSegmento() {
+  Segmento nuevo = (Segmento *) malloc(sizeof(Segmento));
   if (nuevo) {
     nuevo.ini = 1;
     nuevo.ant = NULL;
@@ -38,21 +38,21 @@ int calcPosicion (int pos) {
   }
 }
 
-int insertar (hashLote *lote, int pos, int num) {
-  segmento inUse = lote.head;
+int insertar (HashLote *lote, int pos, int num) {
+  Segmento inUse = lote.head;
   while (TRUE) {
     int fin = inUse.ini + (TAMAX - 1);
     if ( inUse.ini <= pos && pos <= fin ) {
       break;
     } else if  ( fin < pos && inUse.sig == NULL ) {
-      segmento nuevo = newSegmento();
+      Segmento nuevo = newSegmento();
       nuevo.ini = calcRango(pos);
       inUse.sig = nuevo;
       nuevo.ant = inUse;
       inUse = nuevo;
       break;
     } else if (pos < inUse.ini && inUse.ant != NULL) {
-      segmento nuevo = newSegmento();
+      Segmento nuevo = newSegmento();
       nuevo.ini = calcRango(pos);
       inUse.ant->sig = nuevo;
       nuevo.ant = inUse.ant;
@@ -67,5 +67,4 @@ int insertar (hashLote *lote, int pos, int num) {
   inUse.trozo[newPos] = num;
   return 0;
 }
-
-
+/*FIN Funciones y Procedimientos referentes al tipo HashLote*/
