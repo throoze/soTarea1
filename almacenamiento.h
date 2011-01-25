@@ -6,7 +6,7 @@
 #endif
 #define TAMAX 10
 
-
+/*INICIO definición del tipo hashLote*/
 typedef struct {
   int trozo[TAMAX],ini;
   struct segmento *ant,*sig;
@@ -15,7 +15,9 @@ typedef struct {
 typedef struct {
   segmento *head,*tail;
 } hashLote;
+/*FIN del tipo hashLote*/
 
+/*INICIO definición del tipo lista.*/
 typedef struct {
   void contenido;
   struct cajita sig,ant;
@@ -24,7 +26,7 @@ typedef struct {
 typedef struct {
   cajita *head,*tail;
 } lista;
-
+/*FIN del tipo lista.*/
 
 /**
  * Constructor del tipo segmento. Se encarga de hacer la reserva de memoria y de
@@ -57,7 +59,7 @@ int insertar(hashLote *lote, int pos, int num);
  * 
  * pos: posición a la cual se le quiere calcular el rango.
  * 
- * retorna: entero que indica el inicio del rango al que corresponde 'pos'.
+ * retorna: Entero que indica el inicio del rango al que corresponde 'pos'.
  *          El final del rango es calculable sumando (x + (TAMAX - 1)), donde 
  *          'x' es el número devuelto por esta función.
  */
