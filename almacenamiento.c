@@ -60,6 +60,8 @@ int insertar (HashLote *lote, int pos, int num) {
   Segmento *inUse = lote->head;
   while (TRUE) {
     int fin = inUse->ini + (TAMAX - 1);
+    /*DESCOMENTAR PARA VER EL FLUJO DE ESTA FUNCIÓN*/
+    /*    printf("Inicio: %d; Fin: %d\n", inUse->ini, fin);*/
     if ( inUse->ini <= pos && pos <= fin ) {
       break;
     } else if  ( fin < pos && inUse->sig == NULL ) {
@@ -88,7 +90,6 @@ int insertar (HashLote *lote, int pos, int num) {
 
 int get(HashLote *lote, int pos){
   Segmento *inUse = lote->head;
-  int caso;
   while (TRUE) {
     int fin = inUse->ini + (TAMAX - 1);
     if ( inUse->ini <= pos && pos <= fin ) {
@@ -105,7 +106,6 @@ int get(HashLote *lote, int pos){
 
 int estaen(HashLote *lote, int pos){
   Segmento *inUse = lote->head;
-  int caso;
   while (TRUE) {
     int fin = inUse->ini + (TAMAX - 1);
     if ( inUse->ini <= pos && pos <= fin ) {
@@ -119,6 +119,19 @@ int estaen(HashLote *lote, int pos){
       return 0;
     } else if (pos < inUse->ini && inUse->ant != NULL) {
       return 0;
+    }
+    inUse = inUse->sig;
+  }
+}
+
+void print(HashLote lote){
+  Segmento *inUse = lote.head;
+  while (inUse->sig != NULL) {
+    register int i;
+    for (i = 0; i < TAMAX; i++){
+      if (inUse->trozo[i] != 0) {
+	printf("%d\n",inUse->trozo[i]);
+      }
     }
     inUse = inUse->sig;
   }

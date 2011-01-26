@@ -118,6 +118,13 @@ int get(HashLote *lote, int pos);
  *          0 en caso contrario.
  */
 int estaen(HashLote *lote, int pos);
+
+/**
+ * Imprime en la salida estándar el contenido útil del HashLote 'lote'.
+ * 
+ * lote: El HashLote que se desea imprimir por la salida estándar.
+ */
+void print(HashLote lote);
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
 /*----------------------------------------------------------------------------*/
