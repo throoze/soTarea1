@@ -9,6 +9,12 @@
 /*INICIO DEFINICIÓN DE TIPOS*/
 
 /*INICIO definición del tipo HashLote*/
+/**
+ * Híbrido entre lista y arreglos, basicamente es una lista enlazada de 
+ * arreglos, que utilizaremos para almacenar elementos que estén relacionados 
+ * con la posición que ocupan, para luego poder ubicarlos facilmente y 
+ * agilizar la búsqueda.
+ */
 typedef struct segmento {
   int trozo[TAMAX],ini;
   struct segmento *ant,*sig;
@@ -20,6 +26,11 @@ typedef struct {
 /*FIN del tipo HashLote*/
 
 /*INICIO definición del tipo Lista.*/
+
+/**
+ * Clasica lista de elementos. Es una lista de apuntadores a void, con lo cual
+ * se podra almacenar practicamente cualquier cosa.
+ */
 typedef struct cajita{
   void *contenido;
   struct cajita *sig,*ant;
@@ -27,6 +38,7 @@ typedef struct cajita{
 
 typedef struct {
   Cajita *head,*tail;
+  int size;
 } Lista;
 /*FIN del tipo Lista.*/
 
@@ -117,7 +129,7 @@ int get(HashLote *lote, int pos);
  * retorna: 1 en caso de que el elemento en la posición 'pos' haya sido asignado;
  *          0 en caso contrario.
  */
-int estaen(HashLote *lote, int pos);
+int contiene(HashLote *lote, int pos);
 
 /**
  * Imprime en la salida estándar el contenido útil del HashLote 'lote'.
@@ -125,6 +137,29 @@ int estaen(HashLote *lote, int pos);
  * lote: El HashLote que se desea imprimir por la salida estándar.
  */
 void print(HashLote lote);
+
+/**
+ * Se encarga de devolver un HashLote a su estado original vacío, liberando la
+ * memoria consumida por éste.
+ * 
+ * lote: Un apuntador al HashLote que se desea limpiar.
+ * 
+ * retorna: 0 si se completó la limpieza con éxito, 1 en caso contrario.
+ */
+int limpiarHL(HashLote *lote);
+
+
+/**
+ * Función auxiliar que se encarga de liberar la memoria ocupada por un Segmento
+ * y recursivamente por todos los Segmentos apuntados por él.
+ * 
+ * seg: Segmento a liberar recursivamente. Se toma como apuntador a void para 
+ *      poder seguir apuntando a las estructuras miembros del Segmento pasado
+ *      como parámetro.
+ * 
+ * retorna: 0 si se completó la limpieza con éxito, 1 en caso contrario.
+ */
+int limpiarSeg(void *seg);
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
 /*----------------------------------------------------------------------------*/

@@ -27,7 +27,7 @@ Segmento  *newSegmento() {
 
 HashLote *newHashLote(){
   HashLote *nuevo = (HashLote *) malloc(sizeof(HashLote));
-  if (nuevo != NULL) {
+  if (nuevo) {
     nuevo->head = nuevo->tail = newSegmento();
     return nuevo;
   } else {
@@ -69,7 +69,7 @@ int insertar (HashLote *lote, int pos, int num) {
       nuevo->ini = calcRango(pos);
       inUse->sig = nuevo;
       nuevo->ant = inUse;
-      inUse = nuevo;
+      inUse = lote->tail = nuevo;
       break;
     } else if (pos < inUse->ini && inUse->ant != NULL) {
       Segmento *nuevo = newSegmento();
@@ -104,7 +104,7 @@ int get(HashLote *lote, int pos){
   }
 }
 
-int estaen(HashLote *lote, int pos){
+int contiene(HashLote *lote, int pos){
   Segmento *inUse = lote->head;
   while (TRUE) {
     int fin = inUse->ini + (TAMAX - 1);
@@ -126,7 +126,10 @@ int estaen(HashLote *lote, int pos){
 
 void print(HashLote lote){
   Segmento *inUse = lote.head;
-  while (inUse->sig != NULL) {
+  printf("--------\n");
+  while (inUse) {
+    /*DESCOMENTAR PARA VER EL FLUJO DE ESTA FUNCIÓN*/
+    /*printf("Inicio: %d; Fin: %d\n", inUse->ini, (inUse->ini + TAMAX -1));*/
     register int i;
     for (i = 0; i < TAMAX; i++){
       if (inUse->trozo[i] != 0) {
@@ -135,6 +138,37 @@ void print(HashLote lote){
     }
     inUse = inUse->sig;
   }
+  printf("--------\n");
+}
+
+int limpiarHL(HashLote *lote){
+  lote->tail = NULL;
+  if (limpiarSeg(lote->head->sig) != 0) {
+    printf("limpiarHL: error al intentar liberar memoria!!!\n");
+    return 1;
+  }
+  lote->head->ant = NULL;
+  free(lote->head->trozo);
+  free(lote->head);
+  free(lote);
+  return 0;
+}
+
+int limpiarSeg(void *seg){
+  static int a = 0;
+  a++;
+  printf("Recursión No: %d",a);
+  struct segmento *aux = (struct segmento *) seg;
+  if (aux->sig != NULL) {
+    if (limpiarSeg(aux->sig) != 0){
+      printf("limpiarSeg: error al intentar liberar memoria!!!\n");
+      return 1;
+    }
+  }
+  aux->ant = NULL;
+  free(aux->trozo);
+  free(aux);
+  return 0;
 }
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
