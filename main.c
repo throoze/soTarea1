@@ -1,7 +1,22 @@
 #include "main.h"
+#ifndef STD
+#define STD
+#include <stdio.h>
+#define TRUE 1
+#define FALSE 0
+#define TAMAX 10
+#endif
+#ifndef ALM
+#define ALM
+#include "almacenamiento.h"
+#endif
+
+int lectura(){
+}
+
 
 int main (){
-  printf("No llevamos nada en el Main!!! =S\n\n");
+  printf("No llevamos nada útil en el Main!!! =S\n\n");
 
   HashLote hola = *(newHashLote());
 
@@ -44,4 +59,29 @@ int main (){
   printf("\n\nAhora imprimamos de nuevo \n\n");
   
   print(hola);
+
+  printf("\n\nAhora veamos si la funcion 'contiene' funciona \n\n");
+
+  printf("Hay algo en el 1?: %s\n", (contiene(&hola, 1) ? "SI" : "NO"));
+  printf("Hay algo en el 2?: %s\n", (contiene(&hola, 2) ? "SI" : "NO"));
+  printf("Hay algo en el 5?: %s\n", (contiene(&hola, 5) ? "SI" : "NO"));
+  printf("Hay algo en el 9?: %s\n", (contiene(&hola, 9) ? "SI" : "NO"));
+  printf("Hay algo en el 15?: %s\n", (contiene(&hola, 15) ? "SI" : "NO"));
+  printf("Hay algo en el 16?: %s\n", (contiene(&hola, 16) ? "SI" : "NO"));
+  printf("Hay algo en el 122?: %s\n", (contiene(&hola, 122) ? "SI" : "NO"));
+  printf("Hay algo en el 123?: %s\n", (contiene(&hola, 123) ? "SI" : "NO"));
+  printf("Hay algo en el 400?: %s\n", (contiene(&hola, 400) ? "SI" : "NO"));
+  printf("Hay algo en el 401?: %s\n", (contiene(&hola, 401) ? "SI" : "NO"));
+  printf("Hay algo en el 402?: %s\n", (contiene(&hola, 402) ? "SI" : "NO"));
+
+  printf("\n\nAhora vamos a limpiar el HashLote \n\n");
+
+  if (limpiarHL(&hola) != 0) {
+      printf("Error limpiando el HashLote!!!!\n");
+  }
+
+  printf("\n\nAhora veamos que hay en el HashLote \n\n");
+
+  print(hola);
+
 }
