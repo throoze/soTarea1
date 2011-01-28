@@ -11,16 +11,20 @@
 #include "almacenamiento.h"
 #endif
 
-int lectura(){
-}
+int main( argc, char *argv[]){
+
+  FILE *leer = fopen(argv[1], "r");
+  int fuente;
+  int destino; 
+  while(fscanf(leer, "%d %d", &fuente, &destino) != EOF){
+    printf("%d %d\n", fuente, destino);
+   return 1;  
+
+  HashLote cand_raiz = *(newHashLote());
+  HashLote hijos = *(newHashLote());
 
 
-int main (){
-  printf("No llevamos nada útil en el Main!!! =S\n\n");
-
-  HashLote hola = *(newHashLote());
-
-  printf("\n\nVeamos el resultado de las inserciones \n\n");
+  /*  printf("\n\nVeamos el resultado de las inserciones \n\n");
 
   printf("%d\n",insertar(&hola,1,32));
   printf("%d\n",insertar(&hola,2,34));
@@ -82,6 +86,6 @@ int main (){
 
   printf("\n\nAhora veamos que hay en el HashLote \n\n");
 
-  print(hola);
+  print(hola); */
 
 }
