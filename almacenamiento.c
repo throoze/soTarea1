@@ -17,7 +17,7 @@ Segmento  *newSegmento() {
     nuevo->ini = 1;
     nuevo->ant = NULL;
     nuevo->sig = NULL;
-    int i;
+    register int i;
     for (i = 0 ; i < TAMAX; i++){
       nuevo->trozo[i] = 0;
     }
@@ -28,7 +28,8 @@ Segmento  *newSegmento() {
 HashLote *newHashLote(){
   HashLote *nuevo = (HashLote *) malloc(sizeof(HashLote));
   if (nuevo) {
-    nuevo->head = nuevo->tail = newSegmento();
+    nuevo->head = newSegmento();
+    nuevo->tail = nuevo->head;
     return nuevo;
   } else {
     fprintf(stderr, "newHashLote: Error al hacer la reserva de memoria!!!\n");
@@ -60,8 +61,6 @@ int insertar (HashLote *lote, int pos, int num) {
   Segmento *inUse = lote->head;
   while (TRUE) {
     int fin = inUse->ini + (TAMAX - 1);
-    /*DESCOMENTAR PARA VER EL FLUJO DE ESTA FUNCIÓN*/
-    /*    printf("Inicio: %d; Fin: %d\n", inUse->ini, fin);*/
     if ( inUse->ini <= pos && pos <= fin ) {
       break;
     } else if  ( fin < pos && inUse->sig == NULL ) {
@@ -70,6 +69,7 @@ int insertar (HashLote *lote, int pos, int num) {
       inUse->sig = nuevo;
       nuevo->ant = inUse;
       inUse = lote->tail = nuevo;
+      nuevo = NULL;
       break;
     } else if (pos < inUse->ini && inUse->ant != NULL) {
       Segmento *nuevo = newSegmento();
@@ -79,6 +79,7 @@ int insertar (HashLote *lote, int pos, int num) {
       inUse->ant = nuevo;
       nuevo->sig = inUse;
       inUse = nuevo;
+      nuevo = NULL;
       break;
     }
     inUse = inUse->sig;
@@ -130,8 +131,6 @@ void print(HashLote lote){
   printf("|  pos  |   contenido   |\n");
   printf("|-------|---------------|\n");
   while (inUse) {
-    /*DESCOMENTAR PARA VER EL FLUJO DE ESTA FUNCIÓN*/
-    /*printf("Inicio: %d; Fin: %d\n", inUse->ini, (inUse->ini + TAMAX -1));*/
     register int i;
     for (i = 0; i < TAMAX; i++){
       if (inUse->trozo[i] != 0) {
@@ -144,33 +143,22 @@ void print(HashLote lote){
   printf("|_______|_______________|\n");
 }
 
-int limpiarHL(HashLote *lote){
-  lote->tail = NULL;
-  if (limpiarSeg(lote->head->sig) != 0) {
-    printf("limpiarHL: error al intentar liberar memoria!!!\n");
-    return 1;
-  }
-  lote->head->ant = NULL;
-  free(lote->head->trozo);
-  free(lote->head);
-  free(lote);
-  return 0;
-}
-
-int limpiarSeg(void *seg){
-  static int a = 0;
-  a++;
-  printf("Recursión No: %d",a);
-  struct segmento *aux = (struct segmento *) seg;
-  if (aux->sig != NULL) {
-    if (limpiarSeg(aux->sig) != 0){
-      printf("limpiarSeg: error al intentar liberar memoria!!!\n");
-      return 1;
+int liberarHL(HashLote *lote){
+  Segmento *inUse = lote->tail;
+  inUse->sig = NULL;
+  while (inUse) {
+    if (inUse) {
+      Segmento *aux = (inUse->ant ? inUse->ant : NULL);
+      inUse->sig = inUse->ant = NULL;
+      free(inUse);
+      inUse = aux;
     }
   }
-  aux->ant = NULL;
-  free(aux->trozo);
-  free(aux);
+  register int i;
+  for (i = 0; i < TAMAX; i++) {
+    lote->head->trozo[i] = 0;
+  }
+  lote->tail = lote->head;
   return 0;
 }
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
@@ -197,5 +185,37 @@ Lista *newLista() {
     fprintf(stderr, "newLista: Error al hacer la reserva de memoria!!!\n");
     exit(1);
   }
+}
+
+int add(Lista *list, void *elem) {
+  Cajita *nueva = newCajita();
+  nueva->contenido = elem;
+  if (list->head && list->tail) {
+    list->tail->sig = nueva;
+    nueva->ant = list->tail;
+    nueva->sig = NULL;
+    list->tail = nueva;
+  } else {
+    list->head = list->tail = nueva;
+  }
+  nueva = NULL;
+  return 0;
+}
+
+void *delete(Lista *list, void *elem){
+  
+}
+
+int isIn(Lista *list, void *elem){
+  /* Cajita *aux = list->head; */
+  /* void elemento = *elem; */
+  /* while (aux) { */
+  /*   void cont = *(aux->contenido); */
+  /*   if (*(aux->contenido) == elemento) { */
+  /*     return 1; */
+  /*   } */
+  /*   aux = aux->sig; */
+  /* } */
+  /* return 0; */
 }
 /*FIN Funciones y Procedimientos referentes al tipo Lista*/
