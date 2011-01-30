@@ -126,7 +126,9 @@ int contiene(HashLote *lote, int pos){
 
 void print(HashLote lote){
   Segmento *inUse = lote.head;
-  printf("--------\n");
+  printf("|-------|---------------|\n");
+  printf("|  pos  |   contenido   |\n");
+  printf("|-------|---------------|\n");
   while (inUse) {
     /*DESCOMENTAR PARA VER EL FLUJO DE ESTA FUNCIÓN*/
     /*printf("Inicio: %d; Fin: %d\n", inUse->ini, (inUse->ini + TAMAX -1));*/
@@ -134,12 +136,12 @@ void print(HashLote lote){
     for (i = 0; i < TAMAX; i++){
       if (inUse->trozo[i] != 0) {
 	int pos = (inUse->ini + i);
-	printf("%d: %d\n",pos,inUse->trozo[i]);
+	printf("| %d\t| %d\t\t|\n",pos,inUse->trozo[i]);
       }
     }
     inUse = inUse->sig;
   }
-  printf("--------\n");
+  printf("|_______|_______________|\n");
 }
 
 int limpiarHL(HashLote *lote){
