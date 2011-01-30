@@ -133,7 +133,8 @@ void print(HashLote lote){
     register int i;
     for (i = 0; i < TAMAX; i++){
       if (inUse->trozo[i] != 0) {
-	printf("%d\n",inUse->trozo[i]);
+	int pos = (inUse->ini + i);
+	printf("%d: %d\n",pos,inUse->trozo[i]);
       }
     }
     inUse = inUse->sig;
