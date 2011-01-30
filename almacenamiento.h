@@ -15,10 +15,12 @@
  * con la posición que ocupan, para luego poder ubicarlos facilmente y 
  * agilizar la búsqueda.
  */
-typedef struct segmento {
+typedef struct segmento Segmento;
+
+struct segmento {
   int trozo[TAMAX],ini;
-  struct segmento *ant,*sig;
-} Segmento;
+  Segmento *ant,*sig;
+};
 
 typedef struct {
   Segmento *head,*tail;
@@ -31,10 +33,12 @@ typedef struct {
  * Clasica lista de elementos. Es una lista de apuntadores a void, con lo cual
  * se podra almacenar practicamente cualquier cosa.
  */
-typedef struct cajita{
+typedef struct cajita Cajita;
+
+struct cajita {
   void *contenido;
-  struct cajita *sig,*ant;
-} Cajita;
+  Cajita *sig,*ant;
+};
 
 typedef struct {
   Cajita *head,*tail;
@@ -102,7 +106,7 @@ int calcPosicion(int pos);
  * retorna: Un entero que indica el estado de la inserción; 0 si fue realizada 
  *          con éxito, cualquier otro número en caso contrario.
  */
-int insertar(HashLote *lote, int pos, int num);
+int insertarHL(HashLote *lote, int pos, int num);
 
 /**
  * Devuelve el elemento almacenado en la posición 'pos', en el HashLote 'lote'.
@@ -146,20 +150,7 @@ void print(HashLote lote);
  * 
  * retorna: 0 si se completó la limpieza con éxito, 1 en caso contrario.
  */
-int limpiarHL(HashLote *lote);
-
-
-/**
- * Función auxiliar que se encarga de liberar la memoria ocupada por un Segmento
- * y recursivamente por todos los Segmentos apuntados por él.
- * 
- * seg: Segmento a liberar recursivamente. Se toma como apuntador a void para 
- *      poder seguir apuntando a las estructuras miembros del Segmento pasado
- *      como parámetro.
- * 
- * retorna: 0 si se completó la limpieza con éxito, 1 en caso contrario.
- */
-int limpiarSeg(void *seg);
+int liberarHL(HashLote *lote);
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
 /*----------------------------------------------------------------------------*/
@@ -178,6 +169,45 @@ Cajita *newCajita();
  * retorna: un nuevo apuntador a una lista vacía.
  */
 Lista *newLista();
+
+
+/**
+ * Inserta el elemento '*elem' en la Lista '*list'
+ * 
+ * *list: apuntador a la Lista donde se desea hacer la inserción.
+ * 
+ * *elem: elemento a insertar en la Lista.
+ * 
+ * retorna: Un entero que indica el estado de la inserción; 0 si fue realizada 
+ *          con éxito, 1 en caso contrario.
+ */
+int add(Lista *list, void *elem);
+
+/**
+ * Elimina el elemento '*elem' en la Lista '*list'
+ * 
+ * *list: apuntador a la Lista donde se desea hacer la eliminación.
+ * 
+ * *elem: elemento a eliminar de la Lista.
+ * 
+ * retorna: un apuntador al elemento eliminado, de manera de no perder el 
+ *          alcance a ese bloque de memoria.
+ */
+void *delete(Lista *list, void *elem);
+
+/**
+ * Dice si un elemento '*elem' está actualmente o no en la Lista '*list'.
+ * 
+ * *list: apuntador a la Lista donde se desea hacer la búsqueda.
+ * 
+ * *elem: elemento a buscar en la Lista.
+ * 
+ * retorna: Un entero que indica el estado de la búsqueda; 1 si se encontró el
+ *          elemento, 1 en caso contrario.
+ */
+int isIn(Lista *list, void *elem);
+
+
 /*FIN Funciones y Procedimientos referentes al tipo Lista*/
 
 /*----------------------------------------------------------------------------*/
