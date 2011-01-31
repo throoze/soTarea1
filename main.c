@@ -108,13 +108,15 @@ int main( int argc, char *argv[]) {
       
       /* ALMACENAR LA ENTRADA Y DESCARTAR LAS DOS PRIMERAS CONDICIONES */
       
-      /* INSERTA LA FUENTE EN LOS CANDIDATOS DE RAIZ SOLO SI NO EXISTIA YA EN ESTE HASHLOTE O EN HIJOS*/
+      /* INSERTA LA FUENTE EN LOS CANDIDATOS DE RAIZ SOLO SI NO EXISTIA */
+      /* YA EN ESTE HASHLOTE O EN HIJOS*/
       if (!(contiene(&hijos, fuente))) {
 	insertar(&cand_raiz, fuente, TRUE);
       }
       
 
-      /* INSERTA LOS HIJOS MIENTRAS NO ESTEN REPETIDOS EN HIJOS, SI SE ENCUENTRA COMO POSIBLE RAIZ, ENTONCES ES ELIMINADO DE DICHO HASHLOTE */
+      /* INSERTA LOS HIJOS MIENTRAS NO ESTEN REPETIDOS EN HIJOS, SI SE */
+      /* ENCUENTRA COMO POSIBLE RAIZ, ENTONCES ES ELIMINADO DE DICHO HASHLOTE */
       if(!(contiene(&hijos, destino))){
 	insertar(&hijos, destino, fuente);
 	if(contiene(&cand_raiz,destino)){
