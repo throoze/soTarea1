@@ -1,56 +1,60 @@
 #ifndef STD
 #define STD
 #include <stdio.h>
+#include <string.h>
 #define TRUE 1
 #define FALSE 0
 #define TAMAX 10
 #endif
 
-/*INICIO DEFINICIÓN DE TIPOS*/
 
 /*INICIO definición del tipo HashLote*/
 /**
  * Híbrido entre lista y arreglos, basicamente es una lista enlazada de 
  * arreglos, que utilizaremos para almacenar elementos que estén relacionados 
  * con la posición que ocupan, para luego poder ubicarlos facilmente y 
- * agilizar la búsqueda.
+ * agilizar la búsqueda. Una posición se considera ocupada si su contenido es 
+ * diferente de cero (0). De ahi que no se haya implementado la función que 
+ * elimine el contenido de una posición; basta con insertar el elemento cero (0)
+ * en la posición cuyo contenido se desee eliminar.
+ * 
+ * trozo: Arreglo que guarda lo correspondiente a un rango de tamaño TAMAX y
+ *        representa las posiciones compendidas entre 'ini' y ('ini' + TAMAX -1)
+ *        inclusive.
+ * 
+ * ini: Entero que representa el comienzo del rango de este Segmento.
+ * 
+ * size: Entero que representa cuántas casillas hay ocupadas en este Segmento.
+ * 
+ * *ant: Apuntador al Segmento anterior.
+ * 
+ * *sig: Apuntador al siguiente Segmento.
+ * 
  */
 typedef struct segmento Segmento;
 
 struct segmento {
-  int trozo[TAMAX],ini;
-  Segmento *ant,*sig;
-};
+  int trozo[TAMAX], ini, size;
+  Segmento *ant, *sig;
+  };
 
+/**
+ * Acceso rápido a la cabeza y cola de la lista de Segmentos.
+ * 
+ * *head: Apuntador al primer Segmento de este HashLote.
+ * 
+ * *tail: Apuntador al último Segmento de este HashLote.
+ * 
+ * size: Entero que dice cuántas casillas hay ocupadas.
+ */
 typedef struct {
   Segmento *head,*tail;
+  int size;
 } HashLote;
 /*FIN del tipo HashLote*/
 
-/*INICIO definición del tipo Lista.*/
-
-/**
- * Clasica lista de elementos. Es una lista de apuntadores a void, con lo cual
- * se podra almacenar practicamente cualquier cosa.
- */
-typedef struct cajita Cajita;
-
-struct cajita {
-  void *contenido;
-  Cajita *sig,*ant;
-};
-
-typedef struct {
-  Cajita *head,*tail;
-  int size;
-} Lista;
-/*FIN del tipo Lista.*/
-
-/* FIN DEFINICIÓN DE TIPOS*/
-
 /*----------------------------------------------------------------------------*/
 
-/*INICIO DECLARACIÓN DE FUNCIONES Y PROCEDIMIENTOS*/
 
 /*INICIO Funciones y Procedimientos referentes al tipo hashLote*/
 /**
@@ -106,7 +110,7 @@ int calcPosicion(int pos);
  * retorna: Un entero que indica el estado de la inserción; 0 si fue realizada 
  *          con éxito, cualquier otro número en caso contrario.
  */
-int insertarHL(HashLote *lote, int pos, int num);
+int insertar(HashLote *lote, int pos, int num);
 
 /**
  * Devuelve el elemento almacenado en la posición 'pos', en el HashLote 'lote'.
@@ -140,20 +144,50 @@ int contiene(HashLote *lote, int pos);
  * 
  * lote: El HashLote que se desea imprimir por la salida estándar.
  */
-void print(HashLote lote);
+void hl_print(HashLote lote);
 
 /**
  * Se encarga de devolver un HashLote a su estado original vacío, liberando la
- * memoria consumida por éste.
+ * memoria consumida por éste. El apuntador Lote queda apuntando a una lista
+ * vacía.
  * 
  * lote: Un apuntador al HashLote que se desea limpiar.
  * 
  * retorna: 0 si se completó la limpieza con éxito, 1 en caso contrario.
  */
-int liberarHL(HashLote *lote);
+int hl_liberar(HashLote *lote);
+
+/**
+ * Se encarga de devolver un Segmento a su estado original vacío, liberando la
+ * memoria consumida por éste.
+ * 
+ * lote: Un apuntador al Segmento que se desea limpiar.
+ * 
+ * retorna: 0 si se completó la limpieza con éxito, 1 en caso contrario.
+ */
+int seg_liberar(HashLote *lote, Segmento *segm);
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
 /*----------------------------------------------------------------------------*/
+
+/*INICIO definición del tipo Lista.*/
+
+/**
+ * Clasica lista de elementos. Es una lista de apuntadores a void, con lo cual
+ * se podra almacenar practicamente cualquier cosa.
+ */
+typedef struct cajitaInt CajitaInt;
+
+struct cajitaInt {
+  int data;
+  CajitaInt *sig,*ant;
+};
+
+typedef struct {
+  CajitaInt *head,*tail;
+  int size;
+} ListaInt;
+/*FIN del tipo Lista.*/
 
 /*INICIO Funciones y Procedimientos referentes al tipo Lista*/
 /**
@@ -161,57 +195,70 @@ int liberarHL(HashLote *lote);
  * 
  * retorna: Un nuevo apuntador a Cajita vacía.
  */
-Cajita *newCajita();
+CajitaInt *newCajitaInt();
 
 /**
  * Crea una nueva lista vacía, reservando la memoria necesaria para ello.
  * 
  * retorna: un nuevo apuntador a una lista vacía.
  */
-Lista *newLista();
+ListaInt *newListaInt();
 
 
 /**
- * Inserta el elemento '*elem' en la Lista '*list'
+ * Inserta el elemento 'elem' en la Lista '*list'
  * 
  * *list: apuntador a la Lista donde se desea hacer la inserción.
  * 
- * *elem: elemento a insertar en la Lista.
+ * elem: elemento a insertar en la Lista.
  * 
  * retorna: Un entero que indica el estado de la inserción; 0 si fue realizada 
  *          con éxito, 1 en caso contrario.
  */
-int add(Lista *list, void *elem);
+int add(ListaInt *list, int elem);
 
 /**
- * Elimina el elemento '*elem' en la Lista '*list'
+ * Elimina el elemento 'elem' en la Lista '*list'
  * 
  * *list: apuntador a la Lista donde se desea hacer la eliminación.
  * 
- * *elem: elemento a eliminar de la Lista.
- * 
- * retorna: un apuntador al elemento eliminado, de manera de no perder el 
- *          alcance a ese bloque de memoria.
+ * elem: elemento a eliminar de la Lista.
  */
-void *delete(Lista *list, void *elem);
+void delete(ListaInt *list,  int elem);
 
 /**
- * Dice si un elemento '*elem' está actualmente o no en la Lista '*list'.
+ * Dice si un elemento 'elem' está actualmente o no en la Lista '*list'.
  * 
  * *list: apuntador a la Lista donde se desea hacer la búsqueda.
  * 
- * *elem: elemento a buscar en la Lista.
+ * elem: elemento a buscar en la Lista.
  * 
  * retorna: Un entero que indica el estado de la búsqueda; 1 si se encontró el
  *          elemento, 1 en caso contrario.
  */
-int isIn(Lista *list, void *elem);
 
+int isIn(ListaInt *list, int elem);
+
+
+/**
+ * Imprime en la salida estándar la ListaInt 'lista'.
+ * 
+ * lista: ListaInt a imprimir.
+ */
+void li_print(ListaInt lista);
+
+
+/**
+ * Se encarga de devolver una ListaInt a su estado original vacía, liberando la
+ * memoria consumida por ésta.
+ * 
+ * lote: Un apuntador a la ListaInt que se desea liberar.
+ * 
+ * retorna: 0 si se completó la limpieza con éxito, 1 en caso contrario.
+ */
+int li_liberar(ListaInt *lista);
 
 /*FIN Funciones y Procedimientos referentes al tipo Lista*/
 
 /*----------------------------------------------------------------------------*/
-
-
-/*FIN DECLARACIÓN DE FUNCIONES Y PROCEDIMIENTOS*/
 /*FIN DEL ARCHIVO (EOF)*/

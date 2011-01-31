@@ -2,6 +2,7 @@
 #ifndef STD
 #define STD
 #include <stdio.h>
+#include <string.h>
 #define TRUE 1
 #define FALSE 0
 #define TAMAX 10
@@ -15,6 +16,7 @@ Segmento  *newSegmento() {
     exit(1);
   } else {
     nuevo->ini = 1;
+    nuevo->size = 0;
     nuevo->ant = NULL;
     nuevo->sig = NULL;
     register int i;
@@ -85,7 +87,23 @@ int insertar (HashLote *lote, int pos, int num) {
     inUse = inUse->sig;
   }
   int newPos = calcPosicion(pos);
+  if (inUse->trozo[newPos] == 0) {
+    /* SE TRATA DE UNA INSERCIÓN */
+    lote->size++;
+    inUse->size++;
+  } else {
+    if (num == 0) {
+      /* SE TRATA DE UNA ELIMINACIÓN */
+      lote->size--;
+      inUse->size--;
+    }
+  }
   inUse->trozo[newPos] = num;
+  if (inUse->size == 0) {
+    /* EL SEGMENTO ESTÁ VACÍO, ES INÚTIL, SE LIBERA */
+    seg_liberar(lote,inUse);
+  }
+  inUse = NULL;
   return 0;
 }
 
@@ -125,7 +143,7 @@ int contiene(HashLote *lote, int pos){
   }
 }
 
-void print(HashLote lote){
+void hl_print(HashLote lote){
   Segmento *inUse = lote.head;
   printf("|-------|---------------|\n");
   printf("|  pos  |   contenido   |\n");
@@ -143,54 +161,69 @@ void print(HashLote lote){
   printf("|_______|_______________|\n");
 }
 
-int liberarHL(HashLote *lote){
-  Segmento *inUse = lote->tail;
-  inUse->sig = NULL;
+int hl_liberar(HashLote *lote){
+  Segmento *inUse = lote->head;
+  Segmento *siguiente = inUse->sig;
   while (inUse) {
-    if (inUse) {
-      Segmento *aux = (inUse->ant ? inUse->ant : NULL);
-      inUse->sig = inUse->ant = NULL;
-      free(inUse);
-      inUse = aux;
+    seg_liberar(lote,inUse);
+    inUse = siguiente;
+    if (inUse){
+      siguiente = inUse->sig;
     }
   }
-  register int i;
-  for (i = 0; i < TAMAX; i++) {
-    lote->head->trozo[i] = 0;
+  lote->head = lote->tail = NULL;
+  return 0;
+}
+
+int seg_liberar(HashLote *lote, Segmento *seg){
+  Segmento *siguiente = seg->sig;
+  Segmento *anterior = seg->ant;
+  if (siguiente) {
+    siguiente->ant = anterior;
+  } else {
+    lote->tail = seg->ant;
   }
-  lote->tail = lote->head;
+  if (anterior) {
+    anterior->sig = siguiente;
+  } else {
+    lote->head = seg->sig;
+  }
+  seg->ant = seg->sig = NULL;
+  free(seg);
+  seg = NULL;
   return 0;
 }
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
 
 /*INICIO Funciones y Procedimientos referentes al tipo Lista*/
-Cajita *newCajita() {
-  Cajita *nueva = (Cajita *) malloc(sizeof(Cajita));
+CajitaInt *newCajitaInt() {
+  CajitaInt *nueva = (CajitaInt *) malloc(sizeof(CajitaInt));
   if (nueva != NULL) {
-    nueva->contenido = nueva->sig = nueva->ant = NULL;
+    nueva->sig = nueva->ant = NULL;
     return nueva;
   } else {
-    fprintf(stderr, "newCajita: Error al hacer la reserva de memoria!!!\n");
+    fprintf(stderr, "newCajitaInt: Error al hacer la reserva de memoria!!!\n");
     exit(1);
   }
 }
 
-Lista *newLista() {
-  Lista *nueva = (Lista *) malloc(sizeof(Lista));
+ListaInt *newListaInt() {
+  ListaInt *nueva = (ListaInt *) malloc(sizeof(ListaInt));
   if (nueva != NULL) {
     nueva->head = nueva->tail = NULL;
+    nueva->size = 0;
     return nueva;
   } else {
-    fprintf(stderr, "newLista: Error al hacer la reserva de memoria!!!\n");
+    fprintf(stderr, "newListaInt: Error al hacer la reserva de memoria!!!\n");
     exit(1);
   }
 }
 
-int add(Lista *list, void *elem) {
-  Cajita *nueva = newCajita();
-  nueva->contenido = elem;
-  if (list->head && list->tail) {
+int add(ListaInt *list, int elem) {
+  CajitaInt *nueva = newCajitaInt();
+  nueva->data = elem;
+  if (list->head != NULL && list->tail != NULL) {
     list->tail->sig = nueva;
     nueva->ant = list->tail;
     nueva->sig = NULL;
@@ -198,24 +231,91 @@ int add(Lista *list, void *elem) {
   } else {
     list->head = list->tail = nueva;
   }
+  list->size++;
   nueva = NULL;
   return 0;
 }
 
-void *delete(Lista *list, void *elem){
-  
+void delete(ListaInt *list, int elem){
+  CajitaInt *aux = list->head;
+  while (aux) {
+    if (aux->data == elem) {
+      if (list->size == 1) {
+	free(aux);
+	aux = list->head = list->tail = NULL;
+	return;
+      }
+      if (aux->ant) {
+	aux->ant->sig = aux->sig;
+      } else {
+	list->head = aux->sig;
+      }
+      if (aux->sig) {
+	aux->sig->ant = aux->ant;
+      } else {
+	list->tail = aux->ant;
+      }
+      aux->ant = aux->sig = NULL;
+      free(aux);
+      aux = NULL;
+      list->size--;
+      return;
+    }
+    aux = aux->sig;
+  }
+  return;
 }
 
-int isIn(Lista *list, void *elem){
-  /* Cajita *aux = list->head; */
-  /* void elemento = *elem; */
-  /* while (aux) { */
-  /*   void cont = *(aux->contenido); */
-  /*   if (*(aux->contenido) == elemento) { */
-  /*     return 1; */
-  /*   } */
-  /*   aux = aux->sig; */
-  /* } */
-  /* return 0; */
+int isIn(ListaInt *list, int elem){
+  CajitaInt *aux = list->head;
+  while (aux) {
+    if (aux->data == elem) {
+      return TRUE;
+    }
+    aux = aux->sig;
+  }
+  return FALSE;
 }
+
+void li_print(ListaInt lista){
+  CajitaInt *aux = lista.head;
+  printf("|-------|\n");
+  while (aux) {
+    printf("|%d\t|\n", aux->data);
+    aux = aux->sig;
+  }
+  printf("|_______|\n");
+}
+
+int li_liberar(ListaInt *list){
+  CajitaInt *aux = list->head;
+  CajitaInt *siguiente;
+  while (aux) {
+    if (list->size == 1) {
+      free(aux);
+      aux = list->head = list->tail = NULL;
+      return;
+    }
+    if (aux->ant) {
+      aux->ant->sig = aux->sig;
+    } else {
+      list->head = aux->sig;
+    }
+    if (aux->sig) {
+      aux->sig->ant = aux->ant;
+    } else {
+      list->tail = aux->ant;
+    }
+    siguiente = aux->sig;
+    aux->ant = aux->sig = NULL;
+    free(aux);
+    aux = NULL;
+    list->size--;
+    aux = siguiente;
+    siguiente = NULL;
+  }
+  aux = siguiente = NULL;
+  return;
+}
+
 /*FIN Funciones y Procedimientos referentes al tipo Lista*/
