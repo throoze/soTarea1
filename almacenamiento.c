@@ -50,6 +50,15 @@ int calcRango (int pos) {
   }
 }
 
+int unico(HashLote *lote){
+	Segmento *inUse = lote->head;
+	int one = 0;
+	while (inUse){
+		
+
+	}
+}
+
 int calcPosicion (int pos) {
   int mod = (pos % TAMAX);
   if (mod == 0) {
@@ -194,7 +203,7 @@ int seg_liberar(HashLote *lote, Segmento *seg){
   return 0;
 }
 
-int *toArray(HashLote *lote){
+int *hltoArray(HashLote *lote){
   Segmento *inUse = lote->head;
   int *arreglo = (int *) malloc( lote->size * sizeof(int));
   int j = 0;
@@ -204,6 +213,23 @@ int *toArray(HashLote *lote){
       if (inUse->trozo[i] != 0) {
 	arreglo[j] = inUse->trozo[i];
 	j++;
+      }
+    }
+    inUse = inUse->sig;
+  }
+  return arreglo;
+}
+
+int *posToArray(HashLote *lote){
+  Segmento *inUse = lote->head;
+  int *arreglo = (int *) malloc( lote->size * sizeof(int));
+  int j = 0;
+  while (inUse) {
+    register int i;
+    for (i = 0; i < TAMAX; i++){
+      if (inUse->trozo[i] != 0) {
+  	arreglo[j] = i + inUse->ini;
+  	j++;
       }
     }
     inUse = inUse->sig;

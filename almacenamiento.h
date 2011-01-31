@@ -87,6 +87,11 @@ HashLote *newHashLote();
  */
 int calcRango(int pos);
 
+/**funcion a ser utilizada solo si existe un unico elemento en el HashLote
+ *que devuelve la posicion del elemento
+ */
+int unico(HashLote *lote);
+
 /**
  * Calcula la posicion interna dentro de un Segmento donde debe ir 'pos'
  * 
@@ -175,6 +180,14 @@ int seg_liberar(HashLote *lote, Segmento *segm);
  * 
  */
 int *hltoArray(HashLote *lote);
+
+/**
+ * Devuelve un arreglo que contiene todas las posiciones ocupadas en
+ * el HashLote 'lote' por los elementos almacenados.
+ * lote: El HashLote a transferir a arreglo.
+ * 
+ */
+int *posToArray(HashLote *lote);
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
 /*----------------------------------------------------------------------------*/
