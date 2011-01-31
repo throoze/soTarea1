@@ -166,6 +166,15 @@ int hl_liberar(HashLote *lote);
  * retorna: 0 si se completó la limpieza con éxito, 1 en caso contrario.
  */
 int seg_liberar(HashLote *lote, Segmento *segm);
+
+
+/**
+ * Devuelve un arreglo que contiene todos los elementos del HashLote 'lote'.
+ * 
+ * lote: El HashLote a transferir a arreglo.
+ * 
+ */
+int *hltoArray(HashLote *lote);
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
 /*----------------------------------------------------------------------------*/

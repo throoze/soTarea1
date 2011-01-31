@@ -115,9 +115,9 @@ int get(HashLote *lote, int pos){
       int newPos = calcPosicion(pos);
       return inUse->trozo[newPos];
     } else if  ( fin < pos && inUse->sig == NULL ) {
-      return -1;
+      return 0;
     } else if (pos < inUse->ini && inUse->ant != NULL) {
-      return -1;
+      return 0;
     }
     inUse = inUse->sig;
   }
@@ -192,6 +192,23 @@ int seg_liberar(HashLote *lote, Segmento *seg){
   free(seg);
   seg = NULL;
   return 0;
+}
+
+int *toArray(HashLote *lote){
+  Segmento *inUse = lote->head;
+  int *arreglo = (int *) malloc( lote->size * sizeof(int));
+  int j = 0;
+  while (inUse) {
+    register int i;
+    for (i = 0; i < TAMAX; i++){
+      if (inUse->trozo[i] != 0) {
+	arreglo[j] = inUse->trozo[i];
+	j++;
+      }
+    }
+    inUse = inUse->sig;
+  }
+  return arreglo;
 }
 /*FIN Funciones y Procedimientos referentes al tipo HashLote*/
 
