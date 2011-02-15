@@ -50,15 +50,6 @@ int calcRango (int pos) {
   }
 }
 
-int unico(HashLote *lote){
-	Segmento *inUse = lote->head;
-	int one = 0;
-	while (inUse){
-		
-
-	}
-}
-
 int calcPosicion (int pos) {
   int mod = (pos % TAMAX);
   if (mod == 0) {
@@ -70,7 +61,7 @@ int calcPosicion (int pos) {
 
 int insertar (HashLote *lote, int pos, int num) {
   Segmento *inUse = lote->head;
-  while (TRUE) {
+  while (inUse) {
     int fin = inUse->ini + (TAMAX - 1);
     if ( inUse->ini <= pos && pos <= fin ) {
       break;
@@ -118,7 +109,7 @@ int insertar (HashLote *lote, int pos, int num) {
 
 int get(HashLote *lote, int pos){
   Segmento *inUse = lote->head;
-  while (TRUE) {
+  while (inUse) {
     int fin = inUse->ini + (TAMAX - 1);
     if ( inUse->ini <= pos && pos <= fin ) {
       int newPos = calcPosicion(pos);
@@ -134,7 +125,7 @@ int get(HashLote *lote, int pos){
 
 int contiene(HashLote *lote, int pos){
   Segmento *inUse = lote->head;
-  while (TRUE) {
+  while (inUse) {
     int fin = inUse->ini + (TAMAX - 1);
     if ( inUse->ini <= pos && pos <= fin ) {
       int newPos = calcPosicion(pos);
